@@ -1,2 +1,2 @@
 # planter
-planter is an Temperatur and humidity monitor and logger.
+planter is an temperatur and humidity monitor and logger.
