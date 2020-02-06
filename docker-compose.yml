@@ -1,0 +1,36 @@
+# Use postgres/example user/password credentials
+version: '3.4'
+
+services:
+
+    postgres:
+        image: postgres:12.1
+        restart: always
+        environment:
+            POSTGRES_USER: growmon
+            POSTGRES_PASSWORD: growmon
+            POSTGRES_DB: growmon
+        ports:
+            - 5432:5432
+        volumes:
+            - postgres_data:/var/lib/postgresql
+
+    adminer:
+        image: adminer:latest
+        restart: always
+        ports:
+            - 8090:8080
+        depends_on:
+            - postgres
+
+    growmon:
+        image: growmon:latest
+        restart: always
+        environment:
+            APP_STAGE: docker
+        tty: true
+        depends_on:
+            - postgres
+
+volumes:
+    postgres_data:

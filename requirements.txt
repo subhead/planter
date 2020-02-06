@@ -1,0 +1,4 @@
+adafruit-circuitpython-dht
+ppretty
+psycopg2
+python-dotenv

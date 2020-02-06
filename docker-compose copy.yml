@@ -1,0 +1,37 @@
+# Use postgres/example user/password credentials
+version: '3.4'
+
+services:
+
+    postgres:
+        image: postgres:12.1
+        restart: always
+        environment:
+            POSTGRES_USER: jackofatrade
+            POSTGRES_PASSWORD: jackofatrade
+            POSTGRES_DB: jackofatrade
+        ports:
+            - 5432:5432
+        volumes:
+            - postgres_data:/var/lib/postgresql
+
+    adminer:
+        image: adminer:latest
+        restart: always
+        ports:
+            - 8090:8080
+        depends_on:
+            - postgres
+
+    jackofatrade:
+        image: jackofatrade:latest
+        restart: always
+        environment:
+            APP_STAGE: docker
+        tty: true
+        depends_on:
+            - postgres
+            - adminer
+
+volumes:
+    postgres_data:
