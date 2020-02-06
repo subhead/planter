@@ -2,3 +2,5 @@ adafruit-circuitpython-dht
 ppretty
 psycopg2
 python-dotenv
+numpy
+opencv-python
