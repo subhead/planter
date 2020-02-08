@@ -11,6 +11,9 @@ B = '\033[34m'  # blue
 P = '\033[35m'  # purple
 C = '\033[36m'  # cyan
 GR = '\033[37m'  # gray
+
+GPIO = board.D17
+SLEEP = 2.0
 	
 # Initial the dht device, with data pin connected to:
 dhtDevice = adafruit_dht.DHT22(board.D17)
@@ -28,4 +31,4 @@ while True:
 		# Errors happen fairly often, DHT's are hard to read, just keep going
 		print(error.args[0])
 	
-	time.sleep(2.0)
+	time.sleep(SLEEP)
