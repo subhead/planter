@@ -13,7 +13,7 @@ C = '\033[36m'  # cyan
 GR = '\033[37m'  # gray
 	
 # Initial the dht device, with data pin connected to:
-dhtDevice = adafruit_dht.DHT22(board.D18)
+dhtDevice = adafruit_dht.DHT22(board.D17)
 	
 while True:
 	try:
