@@ -94,6 +94,12 @@ check_raspi() {
 	fi
 }
 
+check_git() {
+  if ! is_command git; then
+    GIT_CHECK=true
+  fi
+}
+
 check_curl() {
   if is_command curl; then
     CURL_CHECK=true
@@ -123,7 +129,7 @@ pgk_docker_install() {
 
 pkg_docker_compose_install() {
   local PKG_MANAGER="${1}"
-  "${PKG_MANAGER}" install -y python3 python3-dev python3-pip python3-setuptools python3-venv libssl-dev libffi-dev  -y
+  "${PKG_MANAGER}" install -y git python3 python3-dev python3-pip python3-setuptools python3-venv libssl-dev libffi-dev  -y
   python3 -m pip install -IU docker-compose
 }
 
@@ -401,8 +407,8 @@ main() {
   printf "  %b %s\n" "${INFO}" "The environment have passed all checks."
   printf "  %b %s\n" "${INFO}" "Do you want to start the installation of planter?"
   
-  printf "\n"
-  read -p "  Press enter to continue or strg-c to cancel the installation"
+  #printf "\n"
+  #read -p "  Press enter to continue or strg-c to cancel the installation"
   printf "\n"
 
   pkg_prepare "${PKG_MANAGER}"
