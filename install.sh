@@ -123,7 +123,7 @@ pgk_docker_install() {
 
 pkg_docker_compose_install() {
   local PKG_MANAGER="${1}"
-  "${PKG_MANAGER}" install -y python3 python3-dev python3-pip python3-setuptools libssl-dev libffi-dev  -y
+  "${PKG_MANAGER}" install -y python3 python3-dev python3-pip python3-setuptools python3-venv libssl-dev libffi-dev  -y
   python3 -m pip install -IU docker-compose
 }
 
@@ -135,10 +135,26 @@ check_webcam() {
 }
 
 check_gpio() {
-  if [ -d /sys/class/gpio ]; then
+  if [ -d /sys/class/gpio/gpiochip0 ]; then
     GPIO_CHECK=true
     GPIO_PATH=/sys/class/gpio/
   fi
+}
+
+check_wiringpi() {
+  if ! is_command gpio; then
+    WIRINGPI_CHECK=false
+  else
+    WIRINGPI_CHECK=true
+  fi
+}
+
+install_wiringpi() {
+  #local PKG_MANAGER="${1}"
+  #"${PKG_MANAGER}" install wiringpi
+  cd /tmp
+  wget https://project-downloads.drogon.net/wiringpi-latest.deb
+  sudo dpkg -i /tmp/wiringpi-latest.deb
 }
 
 check_docker() {
@@ -197,6 +213,9 @@ make_repo() {
         # delete everything in it so git can clone into it
         rm -rf "${directory}"
     fi
+
+    printf "\n${remoteRepo}\n"
+    printf "${directory}\n"
     # Clone the repo and return the return code from this command
     git clone -q --depth 20 "${remoteRepo}" "${directory}" &> /dev/null || return $?
     # Show a colored message showing it's status
@@ -252,6 +271,7 @@ getGitFiles() {
         update_repo "${directory}" || { printf "\\n  %b: Could not update local repository.%b\\n" "${COL_LIGHT_RED}" "${COL_NC}"; exit 1; }
     # If it's not a .git repo,
     else
+        printf "le"
         mkdir -p "${directory}"
         # Show an error
         printf "%b  %b %s\\n" "${OVER}" "${CROSS}" "${str}"
@@ -341,6 +361,13 @@ main() {
   # Check if a gpio is present
   if [[ "${GPIO_CHECK}" == true ]]; then
     printf "  %b GPIO found (%s)\n" "${TICK}" "${GPIO_PATH}"
+    
+    check_wiringpi
+    if [[ "${WIRINGPI_CHECK}" == false ]]; then
+      printf "  %b WiringPi not found. Flagging for installation.\n" "${CROSS}"
+      INSTALL_WIRINGPI=true
+    fi
+
   else
     printf "  %b %s\n" "${CROSS}" "No GPIO detected."
   fi
@@ -358,7 +385,7 @@ main() {
   if [[ "${DOCKER_CHECK}" == true ]]; then
     printf "  %b Docker found (%s)\n" "${TICK}" "${DOCKER_PATH}"
   else
-    printf "  %b %s\n" "${CROSS}" "Docker not found. Installing..."
+    printf "  %b %s\n" "${CROSS}" "Docker not found. Flagging for installation."
     INSTALL_DOCKER=true
   fi
 
@@ -380,6 +407,10 @@ main() {
 
   pkg_prepare "${PKG_MANAGER}"
 
+  if [[ "${INSTALL_WIRINGPI}" == true ]]; then
+    install_wiringpi
+  fi
+
   if [[ "${INSTALL_DOCKER}" == true ]]; then
     pgk_docker_install
   fi
@@ -390,7 +421,7 @@ main() {
 
   # Checkout planter
   getGitFiles "${PLANTER_LOCAL_REPO}" "${PLANTER_GIT_URL}" || \
-  { printf "  %bUnable to clone %s into %s, unable to continue%b\\n" "${COL_LIGHT_RED}" "${piholeGitUrl}" "${PI_HOLE_LOCAL_REPO}" "${COL_NC}"; \
+  { printf "  %bUnable to clone %s into %s, unable to continue%b\\n" "${COL_LIGHT_RED}" "${PLANTER_GIT_URL}" "${PLANTER_LOCAL_REPO}" "${COL_NC}"; \
   exit 1; \
   }
   # install planter

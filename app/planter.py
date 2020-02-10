@@ -1,4 +1,6 @@
 import time
+from dynaconf import settings
+import os
 import board
 import adafruit_dht
 
@@ -12,8 +14,19 @@ P = '\033[35m'  # purple
 C = '\033[36m'  # cyan
 GR = '\033[37m'  # gray
 
+os.environ['ENV_FOR_DYNACONF'] = 'planter'
+
+USE_DATABASE = settings.USE_DATABASE
+USE_GPIO = settings.USE_GPIO
+USE_WEBCAM = settings.USE_WEBCAM
+POSTGRES_HOST = settings.POSTGRES_HOST
+POSTGRES_PORT = settings.POSTGRES_PORT
+POSTGRES_SCHEMA = settings.POSTGRES_SCHEMA
+POSTGRES_USERNAME = settings.POSTGRES_USERNAME
+POSTGRES_PASSWORD = settings.POSTGRES_PASSWORD
+SLEEP = settings.as_float('SLEEP')
+
 GPIO = board.D17
-SLEEP = 2.0
 	
 # Initial the dht device, with data pin connected to:
 dhtDevice = adafruit_dht.DHT22(board.D17)
@@ -32,3 +45,5 @@ while True:
 		print(error.args[0])
 	
 	time.sleep(SLEEP)
+
+

@@ -1,6 +1,8 @@
 adafruit-circuitpython-dht
+wiringPi
 ppretty
 psycopg2
 python-dotenv
 numpy
 opencv-python
+dynaconf
