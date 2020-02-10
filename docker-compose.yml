@@ -13,7 +13,7 @@ services:
         ports:
             - 5432:5432
         volumes:
-            - postgres_data:/var/lib/postgresql
+            - /opt/planter/pgdata:/var/lib/postgresql
 
     adminer:
         image: adminer:latest
@@ -26,8 +26,21 @@ services:
     growmon:
         image: planter:latest
         restart: always
+        ports:
+            - "9000:9000"
+            - "2022:22"
+        devices:
+            - "/sys/devices/platform/soc/fe200000.gpio:/sys/devices/platform/soc/fe200000.gpio"
+            - "/sys/class/gpio:/sys/class/gpio"
+            - "/dev/gpiomem:/dev/gpiomem"
+            - "/dev/video0:/dev/video0"
         environment:
             APP_STAGE: docker
+            POSTGRES_HOST: postgres
+            POSTGRES_PORT: 5432
+            POSTGRES_USER: planter
+            POSTGRES_PASSWORD: planter
+            POSTGRES_SCHEMA: planter
         tty: true
         depends_on:
             - postgres
