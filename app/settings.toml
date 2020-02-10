@@ -4,6 +4,7 @@ USE_WEBCAM = 1
 USE_GPIO = 1
 # time to wait between the next run
 SLEEP = 2.0
+GPIO_LIST = "GPIO_PIN_1,GPIO_PIN_2"
 
 POSTGRES_HOST = "postgres"
 POSTGRES_PORT = 5432
@@ -11,7 +12,7 @@ POSTGRES_USERNAME = "planter"
 POSTGRES_PASSWORD = "planter"
 POSTGRES_SCHEMA = "planter"
 
-	[APP.GPIO]
-	GPIO_MODULE_PIN_1 = 'D17,Room1'
-	GPIO_MODULE_PIN_2 = 'D18,Room2'
+[APP.GPIO]
+GPIO_PIN_1 = 'D17,Room1'
+#GPIO_PIN_2 = 'D18,Room2'
 
