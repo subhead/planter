@@ -109,10 +109,11 @@ check_pkg_manager() {
   fi
 }
 
-pkg_prepare() {  
+pkg_prepare() {
+  local PKG_MANAGER="${1}" 
   if ! is_command curl ; then
-    apt-get update -y
-    apt-get install curl
+    "${PKG_MANAGER}" update -y
+    "${PKG_MANAGER}" install curl
   fi
 }
 
@@ -121,7 +122,8 @@ pgk_docker_install() {
 }
 
 pkg_docker_compose_install() {
-  apt-get install -y python3 python3-dev python3-pip python3-setuptools libssl-dev libffi-dev  -y
+  local PKG_MANAGER="${1}"
+  "${PKG_MANAGER}" install -y python3 python3-dev python3-pip python3-setuptools libssl-dev libffi-dev  -y
   python3 -m pip install -IU docker-compose
 }
 
@@ -250,7 +252,6 @@ getGitFiles() {
         update_repo "${directory}" || { printf "\\n  %b: Could not update local repository.%b\\n" "${COL_LIGHT_RED}" "${COL_NC}"; exit 1; }
     # If it's not a .git repo,
     else
-        printf "lala"
         mkdir -p "${directory}"
         # Show an error
         printf "%b  %b %s\\n" "${OVER}" "${CROSS}" "${str}"
@@ -377,17 +378,17 @@ main() {
   read -p "  Press enter to continue or strg-c to cancel the installation"
   printf "\n"
 
-  pkg_prepare
+  pkg_prepare "${PKG_MANAGER}"
 
   if [[ "${INSTALL_DOCKER}" == true ]]; then
     pgk_docker_install
   fi
 
   if [[ "${INSTALL_DOCKER_COMPOSE}" == true ]]; then
-    pkg_docker_compose_install
+    pkg_docker_compose_install "${PKG_MANAGER}"
   fi
 
-  # CHeckout planter
+  # Checkout planter
   getGitFiles "${PLANTER_LOCAL_REPO}" "${PLANTER_GIT_URL}" || \
   { printf "  %bUnable to clone %s into %s, unable to continue%b\\n" "${COL_LIGHT_RED}" "${piholeGitUrl}" "${PI_HOLE_LOCAL_REPO}" "${COL_NC}"; \
   exit 1; \
