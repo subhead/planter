@@ -119,7 +119,9 @@ pkg_prepare() {
   local PKG_MANAGER="${1}" 
   if ! is_command curl ; then
     "${PKG_MANAGER}" update -y
-    "${PKG_MANAGER}" install curl
+    "${PKG_MANAGER}" install -y curl git python3 python3-dev python3-pip python3-setuptools python3-venv 
+  else
+    "${PKG_MANAGER}" install -y git python3 python3-dev python3-pip python3-setuptools python3-venv 
   fi
 }
 
@@ -129,7 +131,7 @@ pgk_docker_install() {
 
 pkg_docker_compose_install() {
   local PKG_MANAGER="${1}"
-  "${PKG_MANAGER}" install -y git python3 python3-dev python3-pip python3-setuptools python3-venv libssl-dev libffi-dev  -y
+  "${PKG_MANAGER}" install -y libssl-dev libffi-dev
   python3 -m pip install -IU docker-compose
 }
 
@@ -405,7 +407,7 @@ main() {
   fi  
 
   printf "  %b %s\n" "${INFO}" "The environment have passed all checks."
-  printf "  %b %s\n" "${INFO}" "Do you want to start the installation of planter?"
+  printf "  %b %s\n" "${INFO}" "Starting the installation of Planter."
   
   #printf "\n"
   #read -p "  Press enter to continue or strg-c to cancel the installation"
@@ -431,7 +433,7 @@ main() {
   exit 1; \
   }
   # install planter
-
+  mkdir -p "${PLANTER_INSTALL_DIR}"
 
 
   printf "  %b %s\n" "${TICK}" "Installation completed."
