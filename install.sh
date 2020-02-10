@@ -14,7 +14,7 @@ PLANTER_GIT_URL='https://github.com/subhead/planter.git'
 PLANTER_LOCAL_REPO='/etc/.planter'
 PLANTER_INSTALL_DIR='/opt/planter'
 PLANTER_BIN_DIR='/usr/local/bin'
-PLANTER_FILES=("$PLANTER_LOCAL_REPO"/{planter.py,requirements.txt,settings.toml})
+PLANTER_FILES=("$PLANTER_LOCAL_REPO"/app/{planter.py,requirements.txt,settings.toml})
 
 # Set these values so the installer can still run in color
 COL_NC='\e[0m' # No Color

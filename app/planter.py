@@ -14,8 +14,8 @@ P = '\033[35m'  # purple
 C = '\033[36m'  # cyan
 GR = '\033[37m'  # gray
 
-
-os.environ['ENV_FOR_DYNACONF'] = 'APP'
+settings.setenv("APP")
+print(settings.GPIO)
 USE_DATABASE = settings.USE_DATABASE
 USE_GPIO = settings.USE_GPIO
 USE_WEBCAM = settings.USE_WEBCAM
@@ -26,24 +26,32 @@ POSTGRES_SCHEMA = settings.POSTGRES_SCHEMA
 POSTGRES_USERNAME = settings.POSTGRES_USERNAME
 POSTGRES_PASSWORD = settings.POSTGRES_PASSWORD
 
-GPIO = 'board.'+settings.GPIO_MODULE_PIN_1
+
+GPIO = {}
+
+for gpio_pin in settings.GPIO:
+	GPIO[gpio_pin] = eval('settings.GPIO.'+gpio_pin)
+	#print(eval('settings.GPIO.' + gpio_pin))
+
+#print(GPIO)
+#GPIO = 'board.'+pin
 	
 # Initial the dht device, with data pin connected to:
-dhtDevice = adafruit_dht.DHT22(eval(GPIO))
+#dhtDevice = adafruit_dht.DHT22(eval(GPIO))
 	
-while True:
-	try:
-		# Print the values to the serial port
-		temperature_c = dhtDevice.temperature
-		temperature_f = temperature_c * (9 / 5) + 32
-		humidity = dhtDevice.humidity
-		print("Temp: {:.1f} F / {:.1f} C    Humidity: {}% "
-				.format(temperature_f, temperature_c, humidity))
-	
-	except RuntimeError as error:
-		# Errors happen fairly often, DHT's are hard to read, just keep going
-		print(error.args[0])
-	
-	time.sleep(SLEEP)
+#while True:
+#	try:
+#		# Print the values to the serial port
+#		temperature_c = dhtDevice.temperature
+#		temperature_f = temperature_c * (9 / 5) + 32
+#		humidity = dhtDevice.humidity
+#		print("Temp: {:.1f} F / {:.1f} C    Humidity: {}% "
+#				.format(temperature_f, temperature_c, humidity))
+#	
+#	except RuntimeError as error:
+#		# Errors happen fairly often, DHT's are hard to read, just keep going
+#		print(error.args[0])
+#	
+#	time.sleep(SLEEP)
 
 
