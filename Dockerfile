@@ -1,7 +1,7 @@
 FROM python:3.6.9-alpine
 
 RUN apk update \
-  && apk add \
+    && apk add \
     build-base \
     postgresql-dev \
     gcc \

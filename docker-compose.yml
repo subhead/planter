@@ -7,9 +7,9 @@ services:
         image: postgres:12.1
         restart: always
         environment:
-            POSTGRES_USER: growmon
-            POSTGRES_PASSWORD: growmon
-            POSTGRES_DB: growmon
+            POSTGRES_USER: planter
+            POSTGRES_PASSWORD: planter
+            POSTGRES_DB: planter
         ports:
             - 5432:5432
         volumes:
@@ -24,7 +24,7 @@ services:
             - postgres
 
     growmon:
-        image: growmon:latest
+        image: planter:latest
         restart: always
         environment:
             APP_STAGE: docker
