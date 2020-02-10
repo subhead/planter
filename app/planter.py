@@ -14,22 +14,22 @@ P = '\033[35m'  # purple
 C = '\033[36m'  # cyan
 GR = '\033[37m'  # gray
 
-os.environ['ENV_FOR_DYNACONF'] = 'planter'
 
+os.environ['ENV_FOR_DYNACONF'] = 'APP'
 USE_DATABASE = settings.USE_DATABASE
 USE_GPIO = settings.USE_GPIO
 USE_WEBCAM = settings.USE_WEBCAM
+SLEEP = settings.as_float('SLEEP')
 POSTGRES_HOST = settings.POSTGRES_HOST
 POSTGRES_PORT = settings.POSTGRES_PORT
 POSTGRES_SCHEMA = settings.POSTGRES_SCHEMA
 POSTGRES_USERNAME = settings.POSTGRES_USERNAME
 POSTGRES_PASSWORD = settings.POSTGRES_PASSWORD
-SLEEP = settings.as_float('SLEEP')
 
-GPIO = board.D17
+GPIO = 'board.'+settings.GPIO_MODULE_PIN_1
 	
 # Initial the dht device, with data pin connected to:
-dhtDevice = adafruit_dht.DHT22(board.D17)
+dhtDevice = adafruit_dht.DHT22(eval(GPIO))
 	
 while True:
 	try:

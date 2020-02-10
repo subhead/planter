@@ -1,16 +1,16 @@
-[planter]
+[APP]
 USE_DATABASE = 1
 USE_WEBCAM = 1
 USE_GPIO = 1
-
 # time to wait between the next run
 SLEEP = 2.0
 
-POSTGRES_HOST = 'postgres'
+POSTGRES_HOST = "postgres"
 POSTGRES_PORT = 5432
-POSTGRES_USERNAME = 'planter'
-POSTGRES_PASSWORD = 'planter'
-POSTGRES_SCHEMA = 'planter'
+POSTGRES_USERNAME = "planter"
+POSTGRES_PASSWORD = "planter"
+POSTGRES_SCHEMA = "planter"
 
 GPIO_MODULE_PIN_1 = 'D17'
 GPIO_MODULE_PIN_2 = 'D18'
+
