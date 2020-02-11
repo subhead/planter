@@ -13,7 +13,7 @@ services:
         ports:
             - 5432:5432
         volumes:
-            - /opt/planter/pgdata:/var/lib/postgresql
+            - /opt/planter/data/db:/var/lib/postgresql
 
     adminer:
         image: adminer:latest
