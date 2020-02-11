@@ -446,7 +446,7 @@ main() {
   mkdir -p "${PLANTER_IMAGE_DIR}"
 
   # install planter
-  cp ${PLANTER_FILES[@]} "${PLANTER_LOG_DIR}"
+  cp ${PLANTER_FILES[@]} "${PLANTER_INSTALL_DIR}"
 
 
   printf "  %b %s\n" "${TICK}" "Installation completed."
