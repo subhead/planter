@@ -1,5 +1,5 @@
 [APP]
-USE_DATABASE = 1
+USE_DATABASE = 0
 USE_WEBCAM = 1
 USE_GPIO = 1
 # time to wait between the next run
@@ -11,6 +11,7 @@ POSTGRES_PORT = 5432
 POSTGRES_USERNAME = "planter"
 POSTGRES_PASSWORD = "planter"
 POSTGRES_SCHEMA = "planter"
+POSTGRES_DATABASE = "planter"
 
 [APP.GPIO]
 GPIO_PIN_1 = 'D17,Room1'
