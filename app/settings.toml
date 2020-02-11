@@ -1,5 +1,5 @@
 [APP]
-USE_DATABASE = 0
+USE_DATABASE = 1
 USE_WEBCAM = 1
 USE_GPIO = 1
 # time to wait between the next run

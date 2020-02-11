@@ -124,7 +124,7 @@ pkg_prepare() {
   local PKG_MANAGER="${1}" 
   if ! is_command curl ; then
     "${PKG_MANAGER}" update -y
-    "${PKG_MANAGER}" install -y curl git python3 python3-dev python3-pip python3-setuptools python3-venv 
+    "${PKG_MANAGER}" install -y curl git python3 python3-dev python3-pip python3-setuptools python3-venv postgresql-server-dev-all
   else
     "${PKG_MANAGER}" install -y git python3 python3-dev python3-pip python3-setuptools python3-venv 
   fi
