@@ -14,6 +14,7 @@ services:
             - 5432:5432
         volumes:
             - /opt/planter/data/db:/var/lib/postgresql
+            - /schema.sql:/docker-entrypoint-initdb.d/init.sql
 
     adminer:
         image: adminer:latest
