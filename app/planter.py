@@ -42,34 +42,35 @@ while True:
 
 		# database thingy
 		if USE_DATABASE:
-			# init database connection
-			try:
-				conn = psycopg2.connect(
-					user = POSTGRES_USERNAME,
-					password = POSTGRES_PASSWORD,
-					host = POSTGRES_HOST,
-					port = POSTGRES_PORT,
-					database = POSTGRES_DATABASE
-				)
+			if humidity > 0:
+				# init database connection
+				try:
+					conn = psycopg2.connect(
+						user = POSTGRES_USERNAME,
+						password = POSTGRES_PASSWORD,
+						host = POSTGRES_HOST,
+						port = POSTGRES_PORT,
+						database = POSTGRES_DATABASE
+					)
 
-				with conn:
-					with conn.cursor() as cursor:
-						query = """INSERT INTO "temperatur" 
-							(temp_date, temp_fahrenheit, temp_celcius, temp_humidity, temp_sensor)
-							VALUES (%s, %s, %s, %s, %s) """							
-						cursor.execute(query, (current_datetime, temperature_f, temperature_c, humidity, pin_desc))
+					with conn:
+						with conn.cursor() as cursor:
+							query = """INSERT INTO "temperatur" 
+								(temp_date, temp_fahrenheit, temp_celcius, temp_humidity, temp_sensor)
+								VALUES (%s, %s, %s, %s, %s) """							
+							cursor.execute(query, (current_datetime, temperature_f, temperature_c, humidity, pin_desc))
 
-			except(Exception, psycopg2.Error) as error:
-				print("Sensor: {} / Temp: {:.1f} F / {:.1f} C    Humidity: {}% "
-				.format(pin_desc, temperature_f, temperature_c, humidity))
-				log.error(f'Dude where is my database?: {error}')
-			finally:
-				# closing db connection
-				if(conn):
+				except(Exception, psycopg2.Error) as error:
 					print("Sensor: {} / Temp: {:.1f} F / {:.1f} C    Humidity: {}% "
-						.format(pin_desc, temperature_f, temperature_c, humidity))
-					conn.close()
-					#log.debug(f"Database ({POSTGRES_DATABASE}) connection successfully closed.")
+					.format(pin_desc, temperature_f, temperature_c, humidity))
+					log.error(f'Dude where is my database?: {error}')
+				finally:
+					# closing db connection
+					if(conn):
+						print("Sensor: {} / Temp: {:.1f} F / {:.1f} C    Humidity: {}% "
+							.format(pin_desc, temperature_f, temperature_c, humidity))
+						conn.close()
+						#log.debug(f"Database ({POSTGRES_DATABASE}) connection successfully closed.")
 
 		else:
 			print("Sensor: {} / Temp: {:.1f} F / {:.1f} C    Humidity: {}% "
