@@ -2,7 +2,7 @@ adafruit-circuitpython-dht
 wiringPi
 ppretty
 psycopg2
+#numpy
+#opencv-python
 python-dotenv
-numpy
-opencv-python
 dynaconf
