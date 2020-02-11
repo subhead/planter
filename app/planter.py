@@ -4,16 +4,8 @@ import os
 import board
 import adafruit_dht
 from pprint import pprint
-
-# Console colors
-W = '\033[0m'  # white (normal)
-R = '\033[31m'  # red
-G = '\033[32m'  # green
-O = '\033[33m'  # orange
-B = '\033[34m'  # blue
-P = '\033[35m'  # purple
-C = '\033[36m'  # cyan
-GR = '\033[37m'  # gray
+import psycopg2
+from datetime import datetime
 
 settings.setenv("APP")
 GPIO_LIST = settings.GPIO_LIST
@@ -26,13 +18,11 @@ POSTGRES_PORT = settings.POSTGRES_PORT
 POSTGRES_SCHEMA = settings.POSTGRES_SCHEMA
 POSTGRES_USERNAME = settings.POSTGRES_USERNAME
 POSTGRES_PASSWORD = settings.POSTGRES_PASSWORD
+POSTGRES_DATABASE = settings.POSTGRES_DATABASE
 
 
-pprint(settings)
 for gpio_pin in settings.get('GPIO'):
-	#print(settings.get('GPIO').get(gpio_pin))
 	pin_id,pin_desc = settings.get('GPIO').get(gpio_pin).split(',')
-	print(pin_id, pin_desc)
 
 
 GPIO = 'board.' + pin_id
@@ -42,11 +32,43 @@ dhtDevice = adafruit_dht.DHT22(eval(GPIO))
 	
 while True:
 	try:
+		current_datetime = datetime.utcnow()
 		# Print the values to the serial port
 		temperature_c = dhtDevice.temperature
 		temperature_f = temperature_c * (9 / 5) + 32
 		humidity = dhtDevice.humidity
-		print("Sensor: {} / Temp: {:.1f} F / {:.1f} C    Humidity: {}% "
+
+		# database thingy
+		if USE_DATABASE:
+			print("Dude where is my database?")
+
+			# init database connection
+			try:
+				conn = psycopg2.connect(
+					user = POSTGRES_USERNAME,
+					password = POSTGRES_PASSWORD,
+					host = POSTGRES_HOST,
+					port = POSTGRES_PORT,
+					database = POSTGRES_DATABASE
+				)
+
+				with conn:
+					with conn.cursor() as cursor:
+						query = """INSERT INTO "temperatur" 
+							(temp_date, temp_fahrenheit, temp_celcius, temp_humidity, temp_sensor)
+							VALUES (%s, %s, %s, %s, %s) """							
+						cursor.execute(query, (current_datetime, temperature_f, temperature_c, humidity, pin_desc))
+
+			except(Exception, psycopg2.Error) as error:
+				log.error(f'Database error: {error}')
+			finally:
+				# closing db connection
+				if(conn):
+					conn.close()
+					log.debug(f"Database ({POSTGRES_DATABASE}) connection successfully closed.")
+
+		else:
+			print("Sensor: {} / Temp: {:.1f} F / {:.1f} C    Humidity: {}% "
 				.format(pin_desc, temperature_f, temperature_c, humidity))
 	
 	except RuntimeError as error:
