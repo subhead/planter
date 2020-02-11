@@ -13,7 +13,11 @@ set -e
 PLANTER_GIT_URL='https://github.com/subhead/planter.git'
 PLANTER_LOCAL_REPO='/etc/.planter'
 PLANTER_INSTALL_DIR='/opt/planter'
-PLANTER_BIN_DIR='/usr/local/bin'
+PLANTER_LOG_DIR='/opt/planter/log'
+PLANTER_DATA_DIR='/opt/planter/data'
+PLANTER_DB_DIR='/opt/planter/data/db'
+PLANTER_IMAGE_DIR='/opt/planter/data/images'
+PLANTER_LOG_FILE='planter.log'
 PLANTER_FILES=("$PLANTER_LOCAL_REPO"/app/{planter.py,requirements.txt,settings.toml})
 
 # Set these values so the installer can still run in color
@@ -433,9 +437,16 @@ main() {
   { printf "  %bUnable to clone %s into %s, unable to continue%b\\n" "${COL_LIGHT_RED}" "${PLANTER_GIT_URL}" "${PLANTER_LOCAL_REPO}" "${COL_NC}"; \
   exit 1; \
   }
-  # install planter
+
+  # make directories
   mkdir -p "${PLANTER_INSTALL_DIR}"
-  cp ${PLANTER_FILES[@]} "${PLANTER_INSTALL_DIR}"
+  mkdir -p "${PLANTER_LOG_DIR}"
+  mkdir -p "${PLANTER_DATA_DIR}"
+  mkdir -p "${PLANTER_DB_DIR}"
+  mkdir -p "${PLANTER_IMAGE_DIR}"
+
+  # install planter
+  cp ${PLANTER_FILES[@]} "${PLANTER_LOG_DIR}"
 
 
   printf "  %b %s\n" "${TICK}" "Installation completed."
