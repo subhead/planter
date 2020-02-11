@@ -38,6 +38,8 @@ while True:
 		temperature_f = temperature_c * (9 / 5) + 32
 		humidity = dhtDevice.humidity
 
+
+
 		# database thingy
 		if USE_DATABASE:
 			# init database connection
@@ -58,6 +60,8 @@ while True:
 						cursor.execute(query, (current_datetime, temperature_f, temperature_c, humidity, pin_desc))
 
 			except(Exception, psycopg2.Error) as error:
+				print("Sensor: {} / Temp: {:.1f} F / {:.1f} C    Humidity: {}% "
+				.format(pin_desc, temperature_f, temperature_c, humidity))
 				log.error(f'Dude where is my database?: {error}')
 			finally:
 				# closing db connection
