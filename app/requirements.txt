@@ -4,5 +4,5 @@ ppretty
 psycopg2
 #numpy
 #opencv-python
-python-dotenv
+python-dotenv=0.10.3
 dynaconf
