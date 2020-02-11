@@ -3,7 +3,7 @@
 
 # Install with this command (from your Linux machine):
 #
-# curl -sSL https://github.com/subhead/planter/install.sh | bash
+# curl -sSL https://raw.githubusercontent.com/subhead/planter/master/install.sh | bash
 
 # -e option instructs bash to immediately exit if any command [1] has a non-zero exit status
 # We do not want users to end up with a partially working install, so we exit the script
