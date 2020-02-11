@@ -63,7 +63,7 @@ while True:
 				# closing db connection
 				if(conn):
 					conn.close()
-					log.debug(f"Database ({POSTGRES_DATABASE}) connection successfully closed.")
+					#log.debug(f"Database ({POSTGRES_DATABASE}) connection successfully closed.")
 
 		else:
 			print("Sensor: {} / Temp: {:.1f} F / {:.1f} C    Humidity: {}% "
