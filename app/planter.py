@@ -40,8 +40,6 @@ while True:
 
 		# database thingy
 		if USE_DATABASE:
-			print("Dude where is my database?")
-
 			# init database connection
 			try:
 				conn = psycopg2.connect(
@@ -60,7 +58,7 @@ while True:
 						cursor.execute(query, (current_datetime, temperature_f, temperature_c, humidity, pin_desc))
 
 			except(Exception, psycopg2.Error) as error:
-				log.error(f'Database error: {error}')
+				log.error(f'Dude where is my database?: {error}')
 			finally:
 				# closing db connection
 				if(conn):
