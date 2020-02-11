@@ -66,6 +66,8 @@ while True:
 			finally:
 				# closing db connection
 				if(conn):
+					print("Sensor: {} / Temp: {:.1f} F / {:.1f} C    Humidity: {}% "
+						.format(pin_desc, temperature_f, temperature_c, humidity))
 					conn.close()
 					#log.debug(f"Database ({POSTGRES_DATABASE}) connection successfully closed.")
 
