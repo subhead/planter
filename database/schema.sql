@@ -1,10 +1,12 @@
+--- DROP DATABASE
+
+--- DROP DATABASE planter;
+
+CREATE DATABASE IF NOT EXISTS planter WITH OWNER planter;
+
 -- DROP SCHEMA planter;
 
 CREATE SCHEMA IF NOT EXISTS planter AUTHORIZATION planter;
-
--- DROP DATABASE
-
-CREATE DATABASE planter WITH OWNER planter
 
 -- Drop table
 
