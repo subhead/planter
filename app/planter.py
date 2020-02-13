@@ -27,7 +27,6 @@ POSTGRES_DATABASE = settings.POSTGRES_DATABASE
 for gpio_pin in settings.get('GPIO'):
 	pin_id,pin_desc = settings.get('GPIO').get(gpio_pin).split(',')
 
-
 GPIO = 'board.' + pin_id
 
 # Initial the dht device, with data pin connected to:
@@ -71,7 +70,6 @@ while True:
 						print("Sensor: {} / Temp: {:.1f} F / {:.1f} C    Humidity: {}% "
 							.format(pin_desc, temperature_f, temperature_c, humidity))
 						conn.close()
-						#log.debug(f"Database ({POSTGRES_DATABASE}) connection successfully closed.")
 
 		else:
 			print("Sensor: {} / Temp: {:.1f} F / {:.1f} C    Humidity: {}% "
@@ -80,12 +78,13 @@ while True:
 		# take picture if enabled
 		if USE_WEBCAM:
 			try:
-				outfile = WEBCAM_OUTPUT_PATH + os.path.sep + 'capture-' + str(current_datetime).replace(':', '_').replace('.', '_').replace(' ', '_').replace('-', '_') + '.jpg'
+				outfile = WEBCAM_OUTPUT_PATH + os.path.sep + 'capture-' + str(current_datetime).replace(':', '_').replace('.', '_').replace(' ', '_').replace('-', '_') + '.png'
 				print("Capturing picture: {}".format(outfile))
 				# TODO: use settings from settings.toml
-				command = "fswebcam --no-banner -b -i 0 -r 1280x720 -d v4l2:/dev/video0 --jpeg 100 --save {}".format(outfile)
+				command = "fswebcam --no-banner -b -S 3 -D 1 -F 1 -i 0 -r 1920x1080 -d v4l2:/dev/video0 --png 9 --save {}".format(outfile)
 				capture = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
 				capture.wait()
+				time.sleep(10)
 			except subprocess.CalledProcessError:
 				print("Capturing image failed.")
 				
