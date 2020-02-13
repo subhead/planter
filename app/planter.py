@@ -74,19 +74,6 @@ while True:
 		else:
 			print("Sensor: {} / Temp: {:.1f} F / {:.1f} C    Humidity: {}% "
 				.format(pin_desc, temperature_f, temperature_c, humidity))
-
-		# take picture if enabled
-		if USE_WEBCAM:
-			try:
-				outfile = WEBCAM_OUTPUT_PATH + os.path.sep + 'capture-' + str(current_datetime).replace(':', '_').replace('.', '_').replace(' ', '_').replace('-', '_') + '.png'
-				print("Capturing picture: {}".format(outfile))
-				# TODO: use settings from settings.toml
-				command = "fswebcam --no-banner -b -S 3 -D 1 -F 1 -i 0 -r 1920x1080 -d v4l2:/dev/video0 --png 9 --save {}".format(outfile)
-				capture = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
-				capture.wait()
-				time.sleep(10)
-			except subprocess.CalledProcessError:
-				print("Capturing image failed.")
 				
 	except RuntimeError as error:
 		# Errors happen fairly often, DHT's are hard to read, just keep going
