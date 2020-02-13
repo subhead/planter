@@ -6,12 +6,15 @@ import adafruit_dht
 from pprint import pprint
 import psycopg2
 from datetime import datetime
+import subprocess
 
 settings.setenv("APP")
 GPIO_LIST = settings.GPIO_LIST
 USE_DATABASE = settings.USE_DATABASE
 USE_GPIO = settings.USE_GPIO
 USE_WEBCAM = settings.USE_WEBCAM
+WEBCAM_INTERVAL = settings.WEBCAM_INTERVAL
+WEBCAM_OUTPUT_PATH = os.getcwd() + os.path.sep + 'data' + os.path.sep + 'images'
 SLEEP = settings.as_float('SLEEP')
 POSTGRES_HOST = settings.POSTGRES_HOST
 POSTGRES_PORT = settings.POSTGRES_PORT
@@ -23,7 +26,6 @@ POSTGRES_DATABASE = settings.POSTGRES_DATABASE
 
 for gpio_pin in settings.get('GPIO'):
 	pin_id,pin_desc = settings.get('GPIO').get(gpio_pin).split(',')
-
 
 GPIO = 'board.' + pin_id
 
@@ -37,8 +39,6 @@ while True:
 		temperature_c = dhtDevice.temperature
 		temperature_f = temperature_c * (9 / 5) + 32
 		humidity = dhtDevice.humidity
-
-
 
 		# database thingy
 		if USE_DATABASE:
@@ -70,12 +70,11 @@ while True:
 						print("Sensor: {} / Temp: {:.1f} F / {:.1f} C    Humidity: {}% "
 							.format(pin_desc, temperature_f, temperature_c, humidity))
 						conn.close()
-						#log.debug(f"Database ({POSTGRES_DATABASE}) connection successfully closed.")
 
 		else:
 			print("Sensor: {} / Temp: {:.1f} F / {:.1f} C    Humidity: {}% "
 				.format(pin_desc, temperature_f, temperature_c, humidity))
-	
+				
 	except RuntimeError as error:
 		# Errors happen fairly often, DHT's are hard to read, just keep going
 		print(error.args[0])
