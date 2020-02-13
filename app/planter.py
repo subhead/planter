@@ -134,6 +134,5 @@ if __name__ == '__main__':
 		sensor_run()
 
 	if args.monitor:
-		while True:
-			sensor_run(mode="monitor")
+		sensor_run(mode="monitor")
 	
