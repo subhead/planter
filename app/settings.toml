@@ -13,13 +13,15 @@ GPIO_LIST = "GPIO_PIN_1,GPIO_PIN_2"
 # webcam settings
 # camera devices
 WEBCAM_DEVICE = "/dev/video0"
-# Interval between the previous captured image in seconds.
-WEBCAM_INTERVAL = 10.0
 # Do we want to save captured images as png? If not jpeg will be used.
 WEBCAM_USE_PNG = 0
 # In which resolution should the image be saved?
 WEBCAM_RESOLUTION = "1280x720"
-WEBCAM_EXTRA_ARGS = "--no-banner -S 3 -D 1 -F 1 -i 0"
+WEBCAM_EXTRA_ARGS = "--no-banner -q -S 3 -D 1 -F 1 -i 0"
+# Should we capture perdiodically images?
+WEBCAM_TIMELAPSE = 1
+# Interval between the previous captured image in seconds.
+WEBCAM_INTERVAL = 10.0
 
 # Database settings
 POSTGRES_HOST = "192.168.2.150"

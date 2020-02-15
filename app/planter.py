@@ -1,13 +1,17 @@
+# Imports
 import time
-from dynaconf import settings
 import os
 import board
-import adafruit_dht
 from pprint import pprint
-import psycopg2
 from datetime import datetime
+from dynaconf import settings
+import adafruit_dht
+import psycopg2
 import subprocess
 import argparse
+import threading
+from multiprocessing import Process
+
 
 # Load config
 settings.setenv("APP")
@@ -21,6 +25,7 @@ WEBCAM_DEVICE = settings.WEBCAM_DEVICE
 WEBCAM_USE_PNG = settings.WEBCAM_USE_PNG
 WEBCAM_RESOLUTION = settings.WEBCAM_RESOLUTION
 WEBCAM_EXTRA_ARGS = settings.WEBCAM_EXTRA_ARGS
+WEBCAM_TIMELAPSE = settings.WEBCAM_TIMELAPSE
 SLEEP = settings.as_float('SLEEP')
 POSTGRES_HOST = settings.POSTGRES_HOST
 POSTGRES_PORT = settings.POSTGRES_PORT
@@ -29,26 +34,44 @@ POSTGRES_USERNAME = settings.POSTGRES_USERNAME
 POSTGRES_PASSWORD = settings.POSTGRES_PASSWORD
 POSTGRES_DATABASE = settings.POSTGRES_DATABASE
 
+
+def run_threaded(job_func):
+	job_thread = threading.Thread(target=job_func)
+	job_thread.daemon()
+	job_thread.start()
+
 # Functions
 def webcam_take_picture():
-	try:		
-		if WEBCAM_USE_PNG:
-			picture_format = '--png 9'
-			file_extension = '.png'
-		else:
-			picture_format = '--jpeg 95'
-			file_extension = '.jpg'
 
-		current_datetime = datetime.utcnow()
-		outfile = WEBCAM_OUTPUT_PATH + os.path.sep + 'capture-' + str(current_datetime).replace(':', '_').replace('.', '_').replace(' ', '_').replace('-', '_') + file_extension
+	timelapse = True
+	
+	while timelapse == True:
+		try:
+			timelapse = WEBCAM_TIMELAPSE
+			# See if we should use ong otherwise switch to jpg as fallback
+			if WEBCAM_USE_PNG:
+				picture_format = '--png 9'
+				file_extension = '.png'
+			else:
+				picture_format = '--jpeg 95'
+				file_extension = '.jpg'
 
-		command = f"fswebcam {WEBCAM_EXTRA_ARGS} -r {WEBCAM_RESOLUTION} -d v4l2:{WEBCAM_DEVICE} {picture_format} --save {outfile}"
-		capture = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
-		capture.wait()
-	except subprocess.CalledProcessError:
-		print("Capturing image failed.")
-	finally:
-		print("Picture {} captured.".format(outfile))
+			current_datetime = datetime.utcnow()
+			outfile = WEBCAM_OUTPUT_PATH + os.path.sep + 'capture-' + str(current_datetime).replace(':', '_').replace('.', '_').replace(' ', '_').replace('-', '_') + file_extension
+
+			command = f"fswebcam {WEBCAM_EXTRA_ARGS} -r {WEBCAM_RESOLUTION} -d v4l2:{WEBCAM_DEVICE} {picture_format} --save {outfile}"
+			capture = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
+			capture.wait()
+		except subprocess.CalledProcessError:
+			print("Capturing image failed.")
+		finally:
+			print("Picture {} captured.".format(outfile))
+			# Check if we should run in timelapse mode otherwise exit the loop
+			if not WEBCAM_TIMELAPSE:
+				timelapse = False
+			else:
+				time.sleep(WEBCAM_INTERVAL)
+
 
 
 def sensor_run(mode=""):
@@ -128,11 +151,21 @@ if __name__ == '__main__':
 	pprint(args)
 
 	if args.camera:
-		webcam_take_picture()
+		run_threaded(webcam_take_picture())
 
 	if args.sensors:
-		sensor_run()
+		run_threaded(sensor_run())
 
 	if args.monitor:
-		sensor_run(mode="monitor")
-	
+		#run_threaded(webcam_take_picture())
+		#run_threaded(sensor_run(mode="monitor"))
+		if USE_WEBCAM:
+			p_cam = Process(target=webcam_take_picture())
+			p_cam.start()			
+		if USE_GPIO:
+			p_gpio = Process(target=sensor_run(mode="monitor"))
+			p_gpio.start()
+		if USE_WEBCAM:
+			p_cam.join()
+		if USE_GPIO:
+			p_gpio.join()
