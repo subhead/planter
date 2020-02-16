@@ -10,7 +10,6 @@ import psycopg2
 import subprocess
 import argparse
 import threading
-from multiprocessing import Process
 
 
 # Load config
