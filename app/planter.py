@@ -137,20 +137,22 @@ if __name__ == '__main__':
 	parser.add_argument("-camera", "-c", "--camera", help="Captures an image from configured video device.", action="store_true")
 	parser.add_argument("-monitor", "-m", "--monitor", help="Start the monitor which runs until stopped", action="store_true")
 	args = parser.parse_args()
-	# debug
-	pprint(args)
 
 	if args.camera:
-		run_threaded(webcam_take_picture())
+		p_cam = threading.Thread(target=webcam_take_picture).start()
 
 	if args.sensors:
-		#run_threaded(sensor_run())
+		th = []
 		for gpio_pin in settings.get('GPIO'):
 			pin_id,pin_desc = settings.get('GPIO').get(gpio_pin).split(',')
-			GPIO = 'board.' + pin_id
-			p_gpio = Process(target=sensor_run(GPIO))
-			p_gpio.start()			
-			p_gpio.join()
+			GPIO = 'board.' + pin_id	
+			p_gpio = threading.Thread(target=sensor_run, args=(GPIO, pin_desc, "monitor",))
+			th.append(p_gpio)
+			p_gpio.start()
+
+		if th is not None:
+			for t in th:
+				t.join()
 
 	if args.monitor:
 		th = []
@@ -165,7 +167,6 @@ if __name__ == '__main__':
 				p_gpio = threading.Thread(target=sensor_run, args=(GPIO, pin_desc, "monitor",))
 				th.append(p_gpio)
 				p_gpio.start()
-				time.sleep(0.5)
 			
 		if th is not None:
 			for t in th:
