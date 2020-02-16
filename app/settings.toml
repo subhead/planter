@@ -17,7 +17,7 @@ WEBCAM_DEVICE = "/dev/video0"
 WEBCAM_USE_PNG = 0
 # In which resolution should the image be saved?
 WEBCAM_RESOLUTION = "1280x720"
-WEBCAM_EXTRA_ARGS = "--no-banner -q -S 3 -D 1 -F 1 -i 0"
+WEBCAM_EXTRA_ARGS = "--no-banner -b -q -S 3 -D 1 -F 1 -i 0"
 # Should we capture perdiodically images?
 WEBCAM_TIMELAPSE = 1
 # Interval between the previous captured image in seconds.
@@ -34,5 +34,5 @@ POSTGRES_DATABASE = "planter"
 # Format = 'Pin ID,Description'
 [APP.GPIO]
 GPIO_PIN_1 = 'D17,Room1'
-#GPIO_PIN_2 = 'D27,Room2'
+GPIO_PIN_2 = 'D27,Room2'
 

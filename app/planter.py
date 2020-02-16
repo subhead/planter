@@ -35,11 +35,6 @@ POSTGRES_PASSWORD = settings.POSTGRES_PASSWORD
 POSTGRES_DATABASE = settings.POSTGRES_DATABASE
 
 
-def run_threaded(job_func):
-	job_thread = threading.Thread(target=job_func)
-	job_thread.daemon()
-	job_thread.start()
-
 # Functions
 def webcam_take_picture():
 
@@ -74,17 +69,12 @@ def webcam_take_picture():
 
 
 
-def sensor_run(mode=""):
-	
-	endless = True
-	
-	for gpio_pin in settings.get('GPIO'):
-		pin_id,pin_desc = settings.get('GPIO').get(gpio_pin).split(',')
+def sensor_run(sensor_pin, sensor_desc, mode=""):
 
-	GPIO = 'board.' + pin_id
+	endless = True
 
 	# Initial the dht device, with data pin connected to:
-	dhtDevice = adafruit_dht.DHT22(eval(GPIO))
+	dhtDevice = adafruit_dht.DHT22(eval(sensor_pin))
 
 	while endless == True:
 		try:
@@ -115,16 +105,16 @@ def sensor_run(mode=""):
 								query = """INSERT INTO "temperatur" 
 									(temp_date, temp_fahrenheit, temp_celcius, temp_humidity, temp_sensor)
 									VALUES (%s, %s, %s, %s, %s) """							
-								cursor.execute(query, (current_datetime, temperature_f, temperature_c, humidity, pin_desc))
+								cursor.execute(query, (current_datetime, temperature_f, temperature_c, humidity, sensor_desc))
 
 					except(Exception, psycopg2.Error) as error:
 						print("Sensor: {} / Temp: {:.1f} F / {:.1f} C    Humidity: {}% "
-						.format(pin_desc, temperature_f, temperature_c, humidity))
+						.format(sensor_desc +'/'+ sensor_pin, temperature_f, temperature_c, humidity))
 					finally:
 						# closing db connection
 						if(conn):
 							print("Sensor: {} / Temp: {:.1f} F / {:.1f} C    Humidity: {}% "
-								.format(pin_desc, temperature_f, temperature_c, humidity))
+								.format(sensor_desc +'/'+ sensor_pin, temperature_f, temperature_c, humidity))
 							conn.close()
 
 			else:
@@ -154,18 +144,30 @@ if __name__ == '__main__':
 		run_threaded(webcam_take_picture())
 
 	if args.sensors:
-		run_threaded(sensor_run())
+		#run_threaded(sensor_run())
+		for gpio_pin in settings.get('GPIO'):
+			pin_id,pin_desc = settings.get('GPIO').get(gpio_pin).split(',')
+			GPIO = 'board.' + pin_id
+			p_gpio = Process(target=sensor_run(GPIO))
+			p_gpio.start()			
+			p_gpio.join()
 
 	if args.monitor:
-		#run_threaded(webcam_take_picture())
-		#run_threaded(sensor_run(mode="monitor"))
+		th = []
 		if USE_WEBCAM:
-			p_cam = Process(target=webcam_take_picture())
-			p_cam.start()			
+			p_cam = threading.Thread(target=webcam_take_picture)
+			th.append(p_cam)
+			p_cam.start()
 		if USE_GPIO:
-			p_gpio = Process(target=sensor_run(mode="monitor"))
-			p_gpio.start()
-		if USE_WEBCAM:
-			p_cam.join()
-		if USE_GPIO:
-			p_gpio.join()
+			for gpio_pin in settings.get('GPIO'):
+				pin_id,pin_desc = settings.get('GPIO').get(gpio_pin).split(',')
+				GPIO = 'board.' + pin_id	
+				p_gpio = threading.Thread(target=sensor_run, args=(GPIO, pin_desc, "monitor",))
+				th.append(p_gpio)
+				p_gpio.start()
+				time.sleep(0.5)
+			
+			for t in th:
+				t.join()
+
+
