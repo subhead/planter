@@ -88,3 +88,5 @@ config.dev.env
 config.prod.env
 
 iso/
+
+dashboard/
