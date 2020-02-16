@@ -60,7 +60,7 @@ def webcam_take_picture():
 		except subprocess.CalledProcessError:
 			print("Capturing image failed.")
 		finally:
-			print("Picture {} captured.".format(outfile))
+			print("Picture: {} captured.".format(outfile))
 			# Check if we should run in timelapse mode otherwise exit the loop
 			if not WEBCAM_TIMELAPSE:
 				timelapse = False
@@ -167,6 +167,7 @@ if __name__ == '__main__':
 				p_gpio.start()
 				time.sleep(0.5)
 			
+		if th is not None:
 			for t in th:
 				t.join()
 
