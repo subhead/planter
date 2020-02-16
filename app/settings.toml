@@ -1,4 +1,6 @@
 [APP]
+# If we want the backend stack on docker aka postgres
+USE_DOCKER = 1
 # Do we want to write the sensor output into the databse?
 USE_DATABASE = 1
 # Do we want to use webcam to capture timelapse images?

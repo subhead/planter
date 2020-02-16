@@ -14,6 +14,7 @@ import threading
 
 # Load config
 settings.setenv("APP")
+USE_DOCKER = settings.USE_DOCKER
 GPIO_LIST = settings.GPIO_LIST
 USE_DATABASE = settings.USE_DATABASE
 USE_GPIO = settings.USE_GPIO
@@ -126,8 +127,20 @@ def sensor_run(sensor_pin, sensor_desc, mode=""):
 		if mode == "monitor":
 			time.sleep(SLEEP)
 
-
-
+def container_start():
+	try:
+		current_datetime = datetime.utcnow()
+		compose_file = os.getcwd() + os.path.sep + "docker-compose.yml"
+		print(compose_file)
+		#command = f"docker-compose -f "
+		#capture = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
+		#capture.wait()
+	except subprocess.CalledProcessError:
+		print("Capturing image failed.")
+	finally:
+		print("Picture: captured.")
+		# Check if we should run in timelapse mode otherwise exit the loop
+		
 
 if __name__ == '__main__':
 	
@@ -136,6 +149,9 @@ if __name__ == '__main__':
 	parser.add_argument("-camera", "-c", "--camera", help="Captures an image from configured video device.", action="store_true")
 	parser.add_argument("-monitor", "-m", "--monitor", help="Start the monitor which runs until stopped", action="store_true")
 	args = parser.parse_args()
+
+	if USE_DOCKER:
+		container_start()
 
 	if args.camera:
 		p_cam = threading.Thread(target=webcam_take_picture).start()
