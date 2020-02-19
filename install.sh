@@ -304,7 +304,6 @@ main() {
 
 	printf "Starting Planter bootstrap script.\n"
 
-	######## FIRST CHECK ########
   # Must be root to install
   local str="Root user check"
   printf "\\n"
@@ -312,33 +311,9 @@ main() {
   if [[ "${EUID}" -eq 0 ]]; then
       # they are root and all is good
       printf "  %b %s\\n" "${TICK}" "${str}"
-      # Show the Pi-hole logo so people know it's genuine since the logo and name are trademarked
-      #show_ascii_berry
-      #make_temporary_log
-  # Otherwise,
   else
-      # They do not have enough privileges, so let the user know
       printf "  %b %s\\n" "${CROSS}" "${str}"
       printf "  %b %bScript called with non-root privileges%b\\n" "${INFO}" "${COL_LIGHT_RED}" "${COL_NC}"
-      printf "      The Pi-hole requires elevated privileges to install and run\\n"
-      printf "      Please check the installer for any concerns regarding this requirement\\n"
-      printf "      Make sure to download this script from a trusted source\\n\\n"
-      printf "  %b Sudo utility check" "${INFO}"
-
-      # If the sudo command exists,
-      if is_command sudo ; then
-          printf "%b  %b Sudo utility check\\n" "${OVER}"  "${TICK}"
-          # Download the install script and run it with admin rights
-          #exec curl -sSL https://raw.githubusercontent.com/pi-hole/pi-hole/master/automated%20install/basic-install.sh | sudo bash "$@"
-          exit $?
-      # Otherwise,
-      else
-          # Let them know they need to run it as root
-          printf "%b  %b Sudo utility check\\n" "${OVER}" "${CROSS}"
-          printf "  %b Sudo is needed for the Web Interface to run pihole commands\\n\\n" "${INFO}"
-          printf "  %b %bPlease re-run this installer as root${COL_NC}\\n" "${INFO}" "${COL_LIGHT_RED}"
-          exit 1
-      fi
   fi
 
   printf "  %b %s\n" "${INFO}" "Checking the environment"
