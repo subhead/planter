@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS planter.temperatur (
 	temp_celcius float4 NULL,
 	temp_humidity float4 NULL,
 	temp_sensor_desc varchar(100) NULL,
-	temp_sensor_pin varchat(25) NULL
+	temp_sensor_pin varchar(25) NULL
 );
 
 ALTER DATABASE planter OWNER TO planter;
