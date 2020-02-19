@@ -103,9 +103,9 @@ def sensor_run(sensor_pin, sensor_desc, mode=""):
 						with conn:
 							with conn.cursor() as cursor:
 								query = """INSERT INTO "temperatur" 
-									(temp_date, temp_fahrenheit, temp_celcius, temp_humidity, temp_sensor)
+									(temp_date, temp_fahrenheit, temp_celcius, temp_humidity, temp_sensor_desc, temp_sensor_pin)
 									VALUES (%s, %s, %s, %s, %s) """							
-								cursor.execute(query, (current_datetime, temperature_f, temperature_c, humidity, sensor_desc))
+								cursor.execute(query, (current_datetime, temperature_f, temperature_c, humidity, sensor_desc, sensor_pin))
 
 					except(Exception, psycopg2.Error) as error:
 						print("Sensor: {} / Temp: {:.1f} F / {:.1f} C    Humidity: {}% "
