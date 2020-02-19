@@ -1,4 +1,6 @@
 [APP]
+# If we want the backend stack on docker aka postgres
+USE_DOCKER = 1
 # Do we want to write the sensor output into the databse?
 USE_DATABASE = 1
 # Do we want to use webcam to capture timelapse images?
@@ -11,10 +13,17 @@ SLEEP = 10.0
 GPIO_LIST = "GPIO_PIN_1,GPIO_PIN_2"
 
 # webcam settings
-# Interval between the previous captured image in seconds.
-WEBCAM_INTERVAL = 10.0
+# camera devices
+WEBCAM_DEVICE = "/dev/video0"
 # Do we want to save captured images as png? If not jpeg will be used.
 WEBCAM_USE_PNG = 1
+# In which resolution should the image be saved?
+WEBCAM_RESOLUTION = "1280x720"
+WEBCAM_EXTRA_ARGS = "--no-banner -b -q -S 3 -D 1 -F 1 -i 0"
+# Should we capture perdiodically images?
+WEBCAM_TIMELAPSE = 1
+# Interval between the previous captured image in seconds.
+WEBCAM_INTERVAL = 60.0
 
 # Database settings
 POSTGRES_HOST = "192.168.2.150"
@@ -27,5 +36,5 @@ POSTGRES_DATABASE = "planter"
 # Format = 'Pin ID,Description'
 [APP.GPIO]
 GPIO_PIN_1 = 'D17,Room1'
-#GPIO_PIN_2 = 'D27,Room2'
+GPIO_PIN_2 = 'D27,Room2'
 
