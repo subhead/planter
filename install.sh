@@ -18,7 +18,7 @@ PLANTER_DATA_DIR='/opt/planter/data'
 PLANTER_DB_DIR='/opt/planter/data/db'
 PLANTER_IMAGE_DIR='/opt/planter/data/images'
 PLANTER_LOG_FILE='planter.log'
-PLANTER_FILES=("$PLANTER_LOCAL_REPO"/app/{planter.py,requirements.txt,settings.toml}, "$PLANTER_LOCAL_REPO"/docker-compose.yml})
+PLANTER_FILES=("$PLANTER_LOCAL_REPO"/app/{planter.py,requirements.txt,settings.toml,docker-compose.yml})
 
 # Set these values so the installer can still run in color
 COL_NC='\e[0m' # No Color
