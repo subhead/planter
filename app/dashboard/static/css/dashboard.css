@@ -1,0 +1,57 @@
+h1 {
+	font-size: 12;
+	text-align: center;
+}
+
+p.important {
+	text-align: center;
+}
+
+div.header {
+	width: 1150px;
+}
+
+#chart {
+	margin: auto;
+	width: 1150px;
+
+}
+
+div.chart-left {
+	position: absolute;
+	float: left
+	left: 0px;
+	width: 560px;
+	border: 1px solid #73AD21;
+	padding: 5px;
+}
+
+div.chart-right {
+	position: relative;
+	float: right;
+	right: 0px;
+	width: 560;
+	border: 1px solid #73AD21;
+	padding: 5px;
+}
+
+#container {
+	position: relative;
+	float: both;
+	margin: auto;
+	margin-top: 400px;
+	width: 1150px;
+
+}
+
+#table-temperatur {
+	width: 1150px;
+	float: both;
+	margin-left: 0px; 
+    margin-top: 0px;
+}
+
+div.content {
+	width: 1150px;
+	margin: auto;
+}

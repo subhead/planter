@@ -1,0 +1,242 @@
+{% extends "base.html" %}
+{% from 'bootstrap/pagination.html' import render_pager, render_pagination %}
+{% block title %}Planter Dashboard{% endblock %}
+{% block head %}
+  {{ super() }}
+  <style type="text/css">
+    .important { color: #336699; }
+  </style>
+  
+{% endblock %}
+{% block content %}
+<div id="content">
+  <div id="header">
+    <h1>Planter Dashboard</h1>
+    <p class="important">
+      {{ header_text }}
+  </div>
+  <div id="chart">
+    <div class="chart-left">
+      
+        <h3>Temperatur</h1>
+
+        <canvas id="temperaturChart" width="560" height="250"></canvas>
+        <script>
+
+          function getRandomColor() {
+            var letters = '0123456789ABCDEF'.split('');
+            var color = '#';
+            for (var i = 0; i < 6; i++ ) {
+              color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+          }
+
+          var timeFormat = 'YYYY-MM-DD hh:mm:ss.s'
+          // get chart canvas
+          var ctx = document.getElementById("temperaturChart").getContext("2d");          
+          // Global parameters:
+          // do not resize the chart canvas when its container does (keep at 600x400px)
+          Chart.defaults.global.responsive = true;
+
+          var timeFormat = 'YYYY-MM-DD hh:mm:ss.s'
+          
+          // define the chart data
+          var tempData = {
+            datasets : [
+            {% for s in chart_labels %}
+              {
+                label: "{{s}}",
+                fill: false,
+                lineTension: 0.1,
+                backgroundColor: getRandomColor(),
+                borderColor: getRandomColor(),
+                borderCapStyle: 'butt',
+                borderDash: [],
+                borderDashOffset: 0.0,
+                borderJoinStyle: 'miter',
+                pointBorderColor: getRandomColor(),
+                pointBackgroundColor: getRandomColor(),
+                pointBorderWidth: 1,
+                pointHoverRadius: 5,
+                showLine: true,
+                pointHoverBackgroundColor: getRandomColor(),
+                pointHoverBorderColor: getRandomColor(),
+                pointHoverBorderWidth: 2,
+                pointRadius: 1,
+                pointHitRadius: 10,
+                data : [{% for item in temp_chart_values|reverse %}
+                          {% if item.sensor_desc == s %}
+                            {x: new Date({{item.x|safe}}), y: {{item.y}}},
+                          {% endif %}                        
+                        {% endfor %}],
+                spanGaps: false
+            },
+            {% endfor %}
+            ]
+          }
+
+          // create the chart using the chart canvas
+          var temperaturChart = new Chart(ctx, {
+            type: 'line',
+            data: tempData,
+            options: {
+                  scales: {
+                      yAxes: [{
+                          stacked: false,
+                          gridLines: {
+                              display: true,
+                              color: "rgba(255,99,132,0.2)"
+                          }
+                      }],
+                      xAxes: [{
+                          type: 'category',
+                          labels: [
+                              {% for s in chart_labels[:1] %}
+                                {% for hum in hum_chart_values|reverse %}
+                                  {% if hum.sensor_desc == s %}
+                                  '{{hum.date.split(" ")[1]|safe}}',
+                                  {% endif %}
+                                {% endfor %}
+                              {% endfor %}
+                          ],
+                          gridLines: {
+                                display: true,
+                                color: "rgba(255,99,132,0.2)"
+                          }
+                      }]
+                  },
+                  elements: {
+                      line: {
+                          tension: .1 // bezier curves
+                      }
+                  }
+              }
+          });
+          </script>
+    </div>
+    <div class="chart-right">
+        <h3>Humidity</h1>
+        <!-- bar chart canvas element -->
+        <canvas id="humidityChart" width="560" height="250"></canvas>
+        <script>
+          function getRandomColor() {
+            var letters = '0123456789ABCDEF'.split('');
+            var color = '#';
+            for (var i = 0; i < 6; i++ ) {
+              color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+          }
+
+          Chart.defaults.global.responsive = true;
+
+          var timeFormat = 'YYYY-MM-DD hh:mm:ss.s'
+          
+          var humData = {
+            datasets : [
+            {% for s in chart_labels %}
+              {
+                label: "{{s}}",
+                fill: false,
+                lineTension: 0.1,
+                backgroundColor: getRandomColor(),
+                borderColor: getRandomColor(),
+                borderCapStyle: 'butt',
+                borderDash: [],
+                borderDashOffset: 0.0,
+                borderJoinStyle: 'miter',
+                pointBorderColor: getRandomColor(),
+                pointBackgroundColor: "#fff",
+                pointBorderWidth: 1,
+                pointHoverRadius: 5,
+                showLine: true,
+                pointHoverBackgroundColor: getRandomColor(),
+                pointHoverBorderColor: getRandomColor(),
+                pointHoverBorderWidth: 2,
+                pointRadius: 1,
+                pointHitRadius: 10,
+                data : [{% for hum in hum_chart_values|reverse %}
+                          {% if hum.sensor_desc == s %}
+                            {x: new Date({{hum.x|safe}}), y: {{hum.y}}},
+                          {% endif %}                        
+                        {% endfor %}],
+                spanGaps: false
+            },
+            {% endfor %}
+            ]
+          }
+            
+          // get chart canvas
+          var ctx = document.getElementById("humidityChart").getContext("2d");
+            
+          // create the chart using the chart canvas
+          var humidityChart = new Chart(ctx, {
+            type: 'line',
+            data: humData,
+            options: {
+                  scales: {
+                      yAxes: [{
+                          stacked: false,
+                          gridLines: {
+                              display: true,
+                              color: "rgba(255,99,132,0.2)"
+                          }
+                      }],
+                      xAxes: [{
+                          type: 'category',
+                          labels: [
+                              {% for s in chart_labels[:1] %}
+                                {% for hum in hum_chart_values|reverse %}
+                                  {% if hum.sensor_desc == s %}
+                                  '{{hum.date.split(" ")[1]|safe}}',
+                                  {% endif %}
+                                {% endfor %}
+                              {% endfor %}
+                          ],
+                          gridLines: {
+                                display: true,
+                                color: "rgba(255,99,132,0.2)"
+                          }
+                      }]
+                  },
+                  elements: {
+                      line: {
+                          tension: .1 // bezier curves
+                      }
+                  }
+              }
+          });
+          </script>
+    </div>    
+  </div>
+  <div id="container">
+    <table id="table-temperatur" class="table table-striped">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Date</th>
+          <th>Sensor</th>
+          <th>Desc</th>
+          <th>Fahrenheit</th>
+          <th>Temp</th>
+          <th>Humidity</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in historicData %}
+        <tr>
+          <td>{{ row.temp_id }}</td>
+          <td>{{ row.temp_date.strftime("%Y-%m-%d %H:%M:%S") }}</td>
+          <td>{{ row.temp_sensor_pin }}</td>
+          <td>{{ row.temp_sensor_desc }}</td>
+          <td>{{ row.temp_fahrenheit }}</td>
+          <td>{{ row.temp_celcius }}</td>
+          <td>{{ row.temp_humidity }}</td>
+        </tr>
+        {%endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
