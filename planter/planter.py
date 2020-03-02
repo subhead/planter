@@ -67,6 +67,13 @@ def webcam_take_picture():
 			else:
 				time.sleep(WEBCAM_INTERVAL)
 
+def webinterface_start():
+	try:
+		command = "FLASK_APP=dashboard.py FLASK_ENV=production flask run --host=0.0.0.0 --port=5000"
+		ui = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
+		ui.wait()
+	except subprocess.CalledProcessError:
+		print("Starting webinterface failed.")
 
 
 def sensor_run(sensor_pin, sensor_desc, mode=""):
@@ -148,17 +155,24 @@ if __name__ == '__main__':
 	parser.add_argument("-sensors", "-s", "--sensors", help="Returns the readings from all configured sensors", action="store_true")
 	parser.add_argument("-camera", "-c", "--camera", help="Captures an image from configured video device.", action="store_true")
 	parser.add_argument("-monitor", "-m", "--monitor", help="Start the monitor which runs until stopped", action="store_true")
+	parser.add_argument("-webinterface", "-w", "--webinterface", help="Starts the monitoring webinterface", action="store_true")
 	args = parser.parse_args()
 
 	#if USE_DOCKER:
 	#	container_start()
+
+	th = []
+
+	if args.webinterface:
+		p_ui = threading.Thread(target=webinterface_start)
+		th.append(p_ui)
+		p_ui.start()
 
 	if args.camera:
 		if USE_WEBCAM:
 			p_cam = threading.Thread(target=webcam_take_picture).start()
 
 	if args.sensors:
-		th = []
 		for gpio_pin in settings.get('GPIO'):
 			pin_id,pin_desc = settings.get('GPIO').get(gpio_pin).split(',')
 			GPIO = 'board.' + pin_id	
@@ -171,7 +185,6 @@ if __name__ == '__main__':
 				t.join()
 
 	if args.monitor:
-		th = []
 		if USE_WEBCAM:
 			p_cam = threading.Thread(target=webcam_take_picture)
 			th.append(p_cam)
@@ -184,8 +197,9 @@ if __name__ == '__main__':
 				th.append(p_gpio)
 				p_gpio.start()
 			
-		if th is not None:
-			for t in th:
-				t.join()
+	if th is not None:
+		for t in th:
+			t.join()
+
 
 
