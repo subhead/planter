@@ -89,7 +89,7 @@ def sensor_run(sensor_pin, sensor_desc, mode=""):
 
 			# database thingy
 			if USE_DATABASE:
-				if humidity > 0:
+				if humidity > 0 and humidity <= 100:
 					# init database connection
 					try:
 						conn = psycopg2.connect(
