@@ -89,7 +89,7 @@ def sensor_run(sensor_pin, sensor_desc, mode=""):
 
 			# database thingy
 			if USE_DATABASE:
-				if humidity > 0 and humidity <= 100:
+				if humidity <= 100:
 					# init database connection
 					try:
 						conn = psycopg2.connect(
@@ -150,8 +150,8 @@ if __name__ == '__main__':
 	parser.add_argument("-monitor", "-m", "--monitor", help="Start the monitor which runs until stopped", action="store_true")
 	args = parser.parse_args()
 
-	if USE_DOCKER:
-		container_start()
+	#if USE_DOCKER:
+	#	container_start()
 
 	if args.camera:
 		if USE_WEBCAM:
