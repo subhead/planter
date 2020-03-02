@@ -4,11 +4,11 @@ USE_DOCKER = 1
 # Do we want to write the sensor output into the databse?
 USE_DATABASE = 1
 # Do we want to use webcam to capture timelapse images?
-USE_WEBCAM = 1
+USE_WEBCAM = 0
 # Do we want to use GPIO connected devices?.
 USE_GPIO = 1
 # time to wait between the next run.
-SLEEP = 10.0
+SLEEP = 30.0
 # A comma seperated string with all connected GPIO pins we want to use.
 GPIO_LIST = "GPIO_PIN_1,GPIO_PIN_2"
 
@@ -22,8 +22,8 @@ WEBCAM_RESOLUTION = "1280x720"
 WEBCAM_EXTRA_ARGS = "--no-banner -b -q -S 3 -D 1 -F 1 -i 0"
 # Should we capture perdiodically images?
 WEBCAM_TIMELAPSE = 1
-# Interval between the previous captured image in seconds.
-WEBCAM_INTERVAL = 60.0
+# Interval between the previous captured image in seconds. 1800=30mins 3600=60mins 43200=12h 86400=24h
+WEBCAM_INTERVAL = 1800.0
 
 # Database settings
 POSTGRES_HOST = "192.168.2.150"
