@@ -35,6 +35,10 @@ div.chart-right {
 	padding: 5px;
 }
 
+div.chartButtons {
+	clear: both;
+}
+
 #container {
 	position: relative;
 	float: both;
