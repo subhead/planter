@@ -8,6 +8,7 @@ from dashboard.models import temperatur
 from flask import jsonify, render_template
 
 
+
 @dashboard.route('/')
 @dashboard.route('/index')
 def index():
