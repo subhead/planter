@@ -75,6 +75,7 @@ target/
 # venv
 venv/
 .venv
+env/
 
 # editor
 .vscode
@@ -89,4 +90,4 @@ config.prod.env
 
 iso/
 
-dashboard/
+

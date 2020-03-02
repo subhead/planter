@@ -2,7 +2,9 @@ adafruit-circuitpython-dht
 wiringPi
 ppretty
 psycopg2
-numpy
-opencv-python
 python-dotenv==0.10.3
 dynaconf
+flask
+Jinja2
+bootstrap-flask
+flask-sqlalchemy
