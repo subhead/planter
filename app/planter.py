@@ -154,7 +154,8 @@ if __name__ == '__main__':
 		container_start()
 
 	if args.camera:
-		p_cam = threading.Thread(target=webcam_take_picture).start()
+		if USE_WEBCAM:
+			p_cam = threading.Thread(target=webcam_take_picture).start()
 
 	if args.sensors:
 		th = []
