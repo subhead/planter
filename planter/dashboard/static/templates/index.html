@@ -14,12 +14,13 @@
     <h1>Planter Dashboard</h1>
     <p class="important">
       {{ header_text }}
+    </p>
   </div>
   <div id="chart">
     <div class="chart-left">
       
-        <h3>Temperatur</h1>
-        <canvas id="temperaturChart" width="560" height="250"></canvas>
+        <h3>Temperatur</h3>
+        <canvas id="temperaturChart" width="560" height="350"></canvas>
         <script>
 
           function getRandomColor() {
@@ -41,7 +42,7 @@
             zoomOptions.drag = zoomOptions.drag ? false : dragOptions;
 
             chart.update();
-            document.getElementById('drag-switch').innerText = zoomOptions.drag ? 'Disable drag mode' : 'Enable drag mode';
+            document.getElementById('drag-switch-temp').innerText = zoomOptions.drag ? 'Disable drag mode' : 'Enable drag mode';
           };
 
           var timeFormat = 'YYYY-MM-DD hh:mm:ss.s'
@@ -169,9 +170,9 @@
     
     
     <div class="chart-right">
-        <h3>Humidity</h1>
+        <h3>Humidity</h3>
         <!-- bar chart canvas element -->
-        <canvas id="humidityChart" width="560" height="250"></canvas>
+        <canvas id="humidityChart" width="560" height="350"></canvas>
         <script>
           function getRandomColor() {
             var letters = '0123456789ABCDEF'.split('');
@@ -187,12 +188,12 @@
           };
 
           window.toggleDragModeHum = function() {
-            var chart = window.humidityChart;
-            var zoomOptions = chart.options.plugins.zoom.zoom;
-            zoomOptions.drag = zoomOptions.drag ? false : dragOptions;
+            var chartHum = window.humidityChart;
+            var zoomOptionsHum = chartHum.options.plugins.zoom.zoom;
+            zoomOptionsHum.drag = zoomOptionsHum.drag ? false : dragOptions;
 
-            chart.update();
-            document.getElementById('drag-switch').innerText = zoomOptions.drag ? 'Disable drag mode' : 'Enable drag mode';
+            chartHum.update();
+            document.getElementById('drag-switch-hum').innerText = zoomOptionsHum.drag ? 'Disable drag mode' : 'Enable drag mode';
           };
 
           Chart.defaults.global.responsive = true;
@@ -318,9 +319,9 @@
     <div class="chartButtons">
       <center>
       <button onclick="resetZoomTemp()">Reset Zoom</button>
-      <button id="drag-switch" onclick="toggleDragModeTemp()">Disable drag mode</button>
+      <button id="drag-switch-temp" onclick="toggleDragModeTemp()">Disable drag mode</button>
       <button onclick="resetZoomHum()">Reset Zoom</button>
-      <button id="drag-switch" onclick="toggleDragModeHum()">Disable drag mode</button>
+      <button id="drag-switch-hum" onclick="toggleDragModeHum()">Disable drag mode</button>
       </center>
     </div> 
   </div>
