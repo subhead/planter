@@ -35,11 +35,18 @@ div.chart-right {
 	padding: 5px;
 }
 
+div.chartButtons {
+	clear: both;
+	margin: auto;
+	margin-top: 50px;
+}
+
 #container {
 	position: relative;
+	clear: both;
 	float: both;
 	margin: auto;
-	margin-top: 400px;
+	margin-top: 50px;
 	width: 1150px;
 
 }

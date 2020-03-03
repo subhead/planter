@@ -14,13 +14,13 @@
     <h1>Planter Dashboard</h1>
     <p class="important">
       {{ header_text }}
+    </p>
   </div>
   <div id="chart">
     <div class="chart-left">
       
-        <h3>Temperatur</h1>
-
-        <canvas id="temperaturChart" width="560" height="250"></canvas>
+        <h3>Temperatur</h3>
+        <canvas id="temperaturChart" width="560" height="350"></canvas>
         <script>
 
           function getRandomColor() {
@@ -31,6 +31,19 @@
             }
             return color;
           }
+
+          window.resetZoomTemp = function() {
+            window.temperaturChart.resetZoom();
+          };
+
+          window.toggleDragModeTemp = function() {
+            var chart = window.temperaturChart;
+            var zoomOptions = chart.options.plugins.zoom.zoom;
+            zoomOptions.drag = zoomOptions.drag ? false : dragOptions;
+
+            chart.update();
+            document.getElementById('drag-switch-temp').innerText = zoomOptions.drag ? 'Disable drag mode' : 'Enable drag mode';
+          };
 
           var timeFormat = 'YYYY-MM-DD hh:mm:ss.s'
           // get chart canvas
@@ -111,15 +124,55 @@
                       line: {
                           tension: .1 // bezier curves
                       }
+                  },
+                  plugins: {
+                  zoom: {
+                    pan: {
+                      enabled: true,
+                      mode: 'xy',
+                      rangeMin: {
+                        x: null,
+                        y: null
+                      },
+                      rangeMax: {
+                        x: null,
+                        y: null
+                      },
+                      // Function called while the user is panning
+                      onPan: function({chart}) { console.log(`I'm panning!!!`); },
+                      // Function called once panning is completed
+                      onPanComplete: function({chart}) { console.log(`I was panned!!!`); }
+                    },
+                    zoom: {
+                      enabled: true,
+                      drag: true,
+                      mode: 'xy',
+                      rangeMin: {
+                        x: null,
+                        y: null
+                      },
+                      rangeMax: {
+                        x: null,
+                        y: null
+                      },
+                      speed: 0.1,
+                      // Function called while the user is zooming
+                      onZoom: function({chart}) { console.log(`I'm zooming!!!`); },
+                      // Function called once zooming is completed
+                      onZoomComplete: function({chart}) { console.log(`I was zoomed!!!`); }
+                    }
                   }
+                }
               }
           });
           </script>
     </div>
+    
+    
     <div class="chart-right">
-        <h3>Humidity</h1>
+        <h3>Humidity</h3>
         <!-- bar chart canvas element -->
-        <canvas id="humidityChart" width="560" height="250"></canvas>
+        <canvas id="humidityChart" width="560" height="350"></canvas>
         <script>
           function getRandomColor() {
             var letters = '0123456789ABCDEF'.split('');
@@ -129,6 +182,19 @@
             }
             return color;
           }
+
+          window.resetZoomHum = function() {
+            window.humidityChart.resetZoom();
+          };
+
+          window.toggleDragModeHum = function() {
+            var chartHum = window.humidityChart;
+            var zoomOptionsHum = chartHum.options.plugins.zoom.zoom;
+            zoomOptionsHum.drag = zoomOptionsHum.drag ? false : dragOptions;
+
+            chartHum.update();
+            document.getElementById('drag-switch-hum').innerText = zoomOptionsHum.drag ? 'Disable drag mode' : 'Enable drag mode';
+          };
 
           Chart.defaults.global.responsive = true;
 
@@ -206,12 +272,62 @@
                       line: {
                           tension: .1 // bezier curves
                       }
+                  },
+                  plugins: {
+                  zoom: {
+                    pan: {
+                      enabled: true,
+                      mode: 'xy',
+                      rangeMin: {
+                        x: null,
+                        y: null
+                      },
+                      rangeMax: {
+                        x: null,
+                        y: null
+                      },
+                      // Function called while the user is panning
+                      onPan: function({chart}) { console.log(`I'm panning!!!`); },
+                      // Function called once panning is completed
+                      onPanComplete: function({chart}) { console.log(`I was panned!!!`); }
+                    },
+                    zoom: {
+                      enabled: true,
+                      drag: true,
+                      mode: 'xy',
+                      rangeMin: {
+                        x: null,
+                        y: null
+                      },
+                      rangeMax: {
+                        x: null,
+                        y: null
+                      },
+                      speed: 0.1,
+                      // Function called while the user is zooming
+                      onZoom: function({chart}) { console.log(`I'm zooming!!!`); },
+                      // Function called once zooming is completed
+                      onZoomComplete: function({chart}) { console.log(`I was zoomed!!!`); }
+                    }
                   }
+                }
               }
+              
           });
           </script>
-    </div>    
+    </div>
+    <div class="chartButtons">
+      <center>
+      <button onclick="resetZoomTemp()">Reset Zoom</button>
+      <button id="drag-switch-temp" onclick="toggleDragModeTemp()">Disable drag mode</button>
+      <button onclick="resetZoomHum()">Reset Zoom</button>
+      <button id="drag-switch-hum" onclick="toggleDragModeHum()">Disable drag mode</button>
+      </center>
+    </div> 
   </div>
+
+   
+  
   <div id="container">
     <table id="table-temperatur" class="table table-striped">
       <thead>
