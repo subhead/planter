@@ -10,6 +10,7 @@ import psycopg2
 import subprocess
 import argparse
 import threading
+import paho.mqtt.publish as paho
 
 
 # Load config
@@ -19,6 +20,7 @@ GPIO_LIST = settings.GPIO_LIST
 USE_DATABASE = settings.USE_DATABASE
 USE_GPIO = settings.USE_GPIO
 USE_WEBCAM = settings.USE_WEBCAM
+USE_MQTT = settings.USE_MQTT
 WEBCAM_INTERVAL = settings.WEBCAM_INTERVAL
 WEBCAM_OUTPUT_PATH = os.getcwd() + os.path.sep + 'data' + os.path.sep + 'images'
 WEBCAM_DEVICE = settings.WEBCAM_DEVICE
@@ -33,6 +35,11 @@ POSTGRES_SCHEMA = settings.POSTGRES_SCHEMA
 POSTGRES_USERNAME = settings.POSTGRES_USERNAME
 POSTGRES_PASSWORD = settings.POSTGRES_PASSWORD
 POSTGRES_DATABASE = settings.POSTGRES_DATABASE
+MQTT_SERVER_HOST = settings.MQTT_SERVER_HOST
+MQTT_SERVER_PORT = settings.MQTT_SERVER_PORT
+MQTT_SERVER_USERNAME = settings.MQTT_SERVER_USERNAME
+MQTT_SERVER_PASSWORD = settings.MQTT_SERVER_PASSWORD
+MQTT_SERVER_TOPIC = settings.MQTT_SERVER_TOPIC
 
 
 # Functions
@@ -76,6 +83,21 @@ def webinterface_start():
 		print("Starting webinterface failed.")
 
 
+def mqtt_publish(mqtt_messages):
+	mqtt_auth = dict(username=MQTT_SERVER_USERNAME, password=MQTT_SERVER_PASSWORD)
+	paho.multiple(
+		mqtt_messages,
+		hostname=MQTT_SERVER_HOST,
+		port=MQTT_SERVER_PORT,
+		client_id="planter-backend",
+		will=None,
+		auth=mqtt_auth,
+		tls=None,
+		transport="tcp"
+	)
+
+
+
 def sensor_run(sensor_pin, sensor_desc, mode=""):
 
 	endless = True
@@ -94,9 +116,18 @@ def sensor_run(sensor_pin, sensor_desc, mode=""):
 			temperature_f = temperature_c * (9 / 5) + 32
 			humidity = dhtDevice.humidity
 
-			# database thingy
-			if USE_DATABASE:
-				if humidity <= 100:
+			if humidity <= 100:
+				# send to mqtt backend
+				if USE_MQTT:
+					mqtt_message = [
+						{f'topic': MQTT_SERVER_TOPIC + "/{sensor_desc}/temperatur".lower().replace(" ", "_"), 'payload': {temperature_c}, 'qos': 0, 'retain': True},
+						{f'topic': MQTT_SERVER_TOPIC + "/{sensor_desc}/humidity".lower().replace(" ", "_"), 'payload': {humidity}, 'qos': 0, 'retain': True}
+					]
+
+					mqtt_publish(mqtt_message)
+
+				# database thingy
+				if USE_DATABASE:				
 					# init database connection
 					try:
 						conn = psycopg2.connect(
