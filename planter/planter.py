@@ -104,12 +104,10 @@ def sensor_run(sensor_pin, sensor_desc, mode=""):
 			if humidity <= 100:
 				# send to mqtt backend
 				if USE_MQTT:
-					print(f'{MQTT_SERVER_TOPIC}/{sensor_desc}/temperatur'.lower().replace(" ", "_"))
 					mqtt_messages = [
 						{f'topic': MQTT_SERVER_TOPIC + f"/{sensor_desc}/temperatur".lower().replace(" ", "_"), 'payload': temperature_c, 'qos': 0, 'retain': True},
 						{f'topic': MQTT_SERVER_TOPIC + f"/{sensor_desc}/humidity".lower().replace(" ", "_"), 'payload': humidity, 'qos': 0, 'retain': True}
 					]
-
 					mqtt_auth = dict(username=MQTT_SERVER_USERNAME, password=MQTT_SERVER_PASSWORD)
 					mqtt_publish.multiple(
 						mqtt_messages,
