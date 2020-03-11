@@ -7,8 +7,10 @@ USE_DATABASE = 1
 USE_WEBCAM = 0
 # Do we want to use GPIO connected devices?.
 USE_GPIO = 1
+# Do we want to write all messages to an MQTT server?
+USE_MQTT = 1
 # time to wait between the next run.
-SLEEP = 30.0
+SLEEP = 10.0
 # A comma seperated string with all connected GPIO pins we want to use.
 GPIO_LIST = "GPIO_PIN_1,GPIO_PIN_2"
 
@@ -24,6 +26,13 @@ WEBCAM_EXTRA_ARGS = "--no-banner -b -q -S 3 -D 1 -F 1 -i 0"
 WEBCAM_TIMELAPSE = 1
 # Interval between the previous captured image in seconds. 1800=30mins 3600=60mins 43200=12h 86400=24h
 WEBCAM_INTERVAL = 1800.0
+
+# MQTT settings
+MQTT_SERVER_HOST = "mosquitto.lan.sublabs.com"
+MQTT_SERVER_PORT = 1883
+MQTT_SERVER_TOPIC = "planter"
+MQTT_SERVER_USERNAME = "USERNAME"
+MQTT_SERVER_PASSWORD = "PASSWORD"
 
 # Database settings
 POSTGRES_HOST = "192.168.2.150"

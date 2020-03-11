@@ -8,3 +8,4 @@ flask
 Jinja2
 bootstrap-flask
 flask-sqlalchemy
+paho-mqtt
