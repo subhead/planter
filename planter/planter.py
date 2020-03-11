@@ -84,7 +84,6 @@ def webinterface_start():
 
 
 def sensor_run(sensor_pin, sensor_desc, mode=""):
-	print("run sensors")
 	endless = True
 
 	# Initial the dht device, with data pin connected to:
