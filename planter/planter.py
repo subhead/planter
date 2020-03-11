@@ -10,7 +10,7 @@ import psycopg2
 import subprocess
 import argparse
 import threading
-import paho.mqtt.publish as paho
+import paho.mqtt.publish as mqtt_publish
 
 
 # Load config
@@ -83,23 +83,8 @@ def webinterface_start():
 		print("Starting webinterface failed.")
 
 
-def mqtt_publish(mqtt_messages):
-	mqtt_auth = dict(username=MQTT_SERVER_USERNAME, password=MQTT_SERVER_PASSWORD)
-	paho.multiple(
-		mqtt_messages,
-		hostname=MQTT_SERVER_HOST,
-		port=MQTT_SERVER_PORT,
-		client_id="planter-backend",
-		will=None,
-		auth=mqtt_auth,
-		tls=None,
-		transport="tcp"
-	)
-
-
-
 def sensor_run(sensor_pin, sensor_desc, mode=""):
-
+	print("run sensors")
 	endless = True
 
 	# Initial the dht device, with data pin connected to:
@@ -119,15 +104,26 @@ def sensor_run(sensor_pin, sensor_desc, mode=""):
 			if humidity <= 100:
 				# send to mqtt backend
 				if USE_MQTT:
-					mqtt_message = [
-						{f'topic': MQTT_SERVER_TOPIC + "/{sensor_desc}/temperatur".lower().replace(" ", "_"), 'payload': {temperature_c}, 'qos': 0, 'retain': True},
-						{f'topic': MQTT_SERVER_TOPIC + "/{sensor_desc}/humidity".lower().replace(" ", "_"), 'payload': {humidity}, 'qos': 0, 'retain': True}
+					print(f'{MQTT_SERVER_TOPIC}/{sensor_desc}/temperatur'.lower().replace(" ", "_"))
+					mqtt_messages = [
+						{f'topic': MQTT_SERVER_TOPIC + f"/{sensor_desc}/temperatur".lower().replace(" ", "_"), 'payload': temperature_c, 'qos': 0, 'retain': True},
+						{f'topic': MQTT_SERVER_TOPIC + f"/{sensor_desc}/humidity".lower().replace(" ", "_"), 'payload': humidity, 'qos': 0, 'retain': True}
 					]
 
-					mqtt_publish(mqtt_message)
+					mqtt_auth = dict(username=MQTT_SERVER_USERNAME, password=MQTT_SERVER_PASSWORD)
+					mqtt_publish.multiple(
+						mqtt_messages,
+						hostname=MQTT_SERVER_HOST,
+						port=MQTT_SERVER_PORT,
+						client_id="planter-backend",
+						will=None,
+						auth=mqtt_auth,
+						tls=None,
+						transport="tcp"
+					)
 
 				# database thingy
-				if USE_DATABASE:				
+				if USE_DATABASE:			
 					# init database connection
 					try:
 						conn = psycopg2.connect(
